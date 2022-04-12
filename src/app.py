@@ -1,14 +1,28 @@
 from flask import Flask, request, render_template
+from scripts.today import get_today
+
 
 
 app = Flask(__name__)
 
-def populate_day():
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+
+    if request.method == "GET":
+        return render_template("home.html")
+    else:
+        authenticate()
+    
+
+def authenticate():
     pass
 
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("home.html")
+def generate_days_timeslots():
+    
+    curr_day, curr_hr = get_today()
+
+    
 
 
 
