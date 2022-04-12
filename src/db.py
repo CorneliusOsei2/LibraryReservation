@@ -20,7 +20,9 @@ class Day(db.Model):
 
 class Time(db.Model):
     __tablename__ = "times"
-    
+
     booked = db.Column(db.Boolean)
+    
 
-
+class User(db.Model):
+    pass
