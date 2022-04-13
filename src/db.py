@@ -20,7 +20,7 @@ class Day(db.Model):
 
 class Time(db.Model):
     __tablename__ = "times"
-
+    start = db.Column(db.String, nullable=False)
     booked = db.Column(db.Boolean)
     
 
