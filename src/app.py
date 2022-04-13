@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template
 from scripts.today import get_today
-
+from scripts.utils import weekday
 
 
 app = Flask(__name__)
@@ -19,8 +19,25 @@ def authenticate():
     pass
 
 def generate_days_timeslots():
-    
+
     curr_day, curr_hr = get_today()
+    if curr_day == 1 or curr_day == 7:
+        #Generate for whole week
+        pass
+    
+    for k,v in weekday.items():
+
+        if k == curr_day:
+            # Create a day object
+            # Create the hours from curr_hour
+            pass
+
+        elif k > curr_day:
+            # Create a day
+            # Create the hours from 8am
+            pass
+    
+
 
     
 
