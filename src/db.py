@@ -3,6 +3,22 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
+
+class Week(db.Model):
+    __tablename__ = "weeks"
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.Integer, nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+    days = db.relationship("Day", cascade="delete")
+
+    def serialize_for_week(self):
+        return {
+            "id": self.id,
+            "number": self.number,
+            "days": [day.serialize_for_week() for day in self.days]
+        }
+
 class Day(db.Model):
 
     __tablename__ = "days"
@@ -38,7 +54,17 @@ class Time(db.Model):
     booked = db.Column(db.Boolean)
     day_id =  db.Column(db.Integer, db.ForeignKey("days.id"))
     day = db.relationship("Day", cascade="delete")
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     
+    def serialize_for_time(self):
+
+        return {
+            "id": self.id,
+            "start": self.start,
+            "booked": self.booked,
+            "user": self.user_id
+        }
+
     def serialize_for_day(self):
 
         return {
@@ -46,23 +72,23 @@ class Time(db.Model):
             "start": self.start,
             "booked": self.booked
         }
+    
+    def serialize_for_user(self):
 
-class Week(db.Model):
-    __tablename__ = "weeks"
-    id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.Integer, nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-    days = db.relationship("Day", cascade="delete")
-
-
-    def serialize_for_week(self):
         return {
             "id": self.id,
-            "number": self.number,
-            "days": [day.serialize_for_week() for day in self.days]
+            "start": self.start,
         }
+
     
 
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
+    booked_times = db.relationship("Time", cascade="delete")
+
+    def serialize_for_user(self):
+        return {
+            "id": self.id,
+            "booked_times": [time.serialize_for_user() for time in self.booked_times]
+        }
