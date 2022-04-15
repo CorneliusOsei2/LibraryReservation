@@ -1,9 +1,6 @@
-
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-
-
 
 class Week(db.Model):
     __tablename__ = "weeks"
@@ -20,14 +17,12 @@ class Week(db.Model):
         }
 
 class Day(db.Model):
-
     __tablename__ = "days"
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    active = db.Column(db.Boolean)
+    active = db.Column(db.Boolean, nullable=False)
     week_id = db.Column(db.Integer, db.ForeignKey("weeks.id"))
-    week = db.relationship("Week", cascade="delete")
+    week = db.relationship("Week", cascade="delete", back_populates="days")
     timeslots = db.relationship("Time", cascade="delete")
 
     def serialize_for_day(self):
@@ -55,6 +50,7 @@ class Time(db.Model):
     day_id =  db.Column(db.Integer, db.ForeignKey("days.id"))
     day = db.relationship("Day", cascade="delete")
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    description = db.Column(db.String, nullable=True)
     
     def serialize_for_time(self):
 
@@ -81,7 +77,6 @@ class Time(db.Model):
         }
 
     
-
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -91,4 +86,9 @@ class User(db.Model):
         return {
             "id": self.id,
             "booked_times": [time.serialize_for_user() for time in self.booked_times]
+        }
+    
+    def serialize_for_time(self):
+        return {
+            "id": self.id
         }
