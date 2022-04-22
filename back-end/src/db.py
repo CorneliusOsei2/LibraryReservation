@@ -8,6 +8,7 @@ class Week(db.Model):
     number = db.Column(db.Integer, nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     days = db.relationship("Day", cascade="delete")
+    
 
     def serialize_for_week(self):
         return {

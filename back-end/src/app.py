@@ -1,12 +1,14 @@
 from crypt import methods
 from flask import Flask, request, render_template
 from scripts.helpers import gen_weekdays, gen_hours, get_today
-from scripts.utils import response, Debug
+from scripts.utils import response
 from db import db,Week, Day, Time
 import requests, json
+from flask_cors import CORS
 
 # Initialize Flask
 app = Flask(__name__)
+CORS(app)
 
 # DB config
 db_filename = "library.db"
@@ -59,7 +61,6 @@ def gen_all_days_hours():
     return response(res=out, success=True, code=200)
             
 
-
 def check_day_active(day):
     '''
     Check if day has active/free timeslots or can be booked
@@ -72,7 +73,6 @@ def check_day_active(day):
     return False
 
         
-
 # Routes
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -91,8 +91,8 @@ def get_all_weeks():
     Get all weeks: active and inactive
     '''
     weeks = Week.query.all()
-
-    return response(res={"weeks": [wk.serialize_for_week() for wk in weeks]}, success=True, code=200)
+    return response(
+        res={"weeks": [wk.serialize_for_week() for wk in weeks]}, success=True, code=200)
 
 @app.route("/library/weeks/active/", methods=["GET"])
 def get_active_week_days(week):
@@ -117,7 +117,6 @@ def get_all_days():
     days = Day.query.all()
 
     return response(res={"days":[day.serialize_for_day() for day in days]}, success=True, code=200)
-
 
 @app.route("/library/<int:week_id>/<int:day_id>/", methods=["GET"])
 def get_active_day_times(week_id, day_id):
@@ -184,8 +183,5 @@ def drop_table():
 
 
 
-
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5500, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5500)
