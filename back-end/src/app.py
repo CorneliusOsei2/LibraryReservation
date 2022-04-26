@@ -25,7 +25,7 @@ with app.app_context():
 
 @app.route("/", methods=["GET"])
 def greet():
-    return "HI", 200
+    return "HI Fan", 200
     
 @app.route("/library/gen/", methods=["GET"])
 def gen_all_days_hours():
