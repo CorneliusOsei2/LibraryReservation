@@ -22,6 +22,11 @@ with app.app_context():
 
 
 # Helper Functions and Generators
+
+@app.route("/", methods=["GET"])
+def greet():
+    return "HI", 200
+    
 @app.route("/library/gen/", methods=["GET"])
 def gen_all_days_hours():
     '''

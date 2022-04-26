@@ -78,10 +78,11 @@ class Time(db.Model):
         }
 
     
-class User(db.Model):
-    __tablename__ = "users"
+class Student(db.Model):
+    __tablename__ = "students"
     id = db.Column(db.Integer, primary_key=True)
     booked_times = db.relationship("Time", cascade="delete")
+    role = db.Column(db.String, nullable=False)
 
     def serialize_for_user(self):
         return {
@@ -93,3 +94,24 @@ class User(db.Model):
         return {
             "id": self.id
         }
+
+
+class Staff(db.Model):
+    __tablename__ = "staffs"
+    id = db.Column(db.Integer, primary_key=True)
+    booked_times = db.relationship("Time", cascade="delete")
+    role = db.Column(db.String, nullable=False)
+
+    def serialize_for_user(self):
+        return {
+            "id": self.id,
+            "booked_times": [time.serialize_for_user() for time in self.booked_times]
+        }
+    
+    def serialize_for_time(self):
+        return {
+            "id": self.id
+        }
+
+class Course(db.Model):
+    pass
